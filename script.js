@@ -49,6 +49,36 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+
+    // Add before form submission code
+// Lightbox functionality
+document.querySelectorAll('.gallery-image').forEach(img => {
+  img.addEventListener('click', () => {
+    const lightbox = document.createElement('div');
+    lightbox.className = 'lightbox';
+    lightbox.innerHTML = `
+      <img src="${img.dataset.full}" 
+           alt="${img.alt}" 
+           class="lightbox-img">
+      <div class="lightbox-close">×</div>
+    `;
+    
+    document.body.appendChild(lightbox);
+    
+    lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
+      lightbox.remove();
+    });
+  });
+});
+
+// Update animation targets
+const animateOnScroll = function() {
+  const animation_elements = document.querySelectorAll(
+    '.timeline-item, .project-card, .leadership-item, .gallery-card'
+  );
+  // Keep existing animation logic
+};
+
     // Form submission
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -72,12 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formStatus.textContent = 'Please enter a valid email address';
             return;
         }
-        
-        // In a real implementation, you would send this data to a server
-        // For demonstration purposes, we'll just show a success message
-        
-        // Simulate sending form (would be an actual AJAX request in production)
-        formStatus.textContent = 'Sending...';
+                formStatus.textContent = 'Sending...';
         
         setTimeout(() => {
             formStatus.className = 'form-status success';
