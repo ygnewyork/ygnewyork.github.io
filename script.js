@@ -1,4 +1,4 @@
-// Navigation and Scroll Logic
+// Navigation and Scroll Logic 
 document.addEventListener('DOMContentLoaded', function() {
     const navbar = document.getElementById('navbar');
     const navLinks = document.querySelectorAll('.nav-links a');
@@ -7,6 +7,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section');
     const contactForm = document.getElementById('contactForm');
     const formStatus = document.getElementById('formStatus');
+
+    // Initialize typing animation
+    initTypeWriter();
+    
+    // Initialize smooth scrolling
+    initSmoothScroll();
+    
+    // Initialize scroll animations
+    initScrollAnimations();
 
     // Toggle mobile menu
     hamburger.addEventListener('click', () => {
@@ -29,10 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             navbar.classList.remove('scrolled');
         }
-        
+
         // Active link on scroll
         let current = '';
-        
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
@@ -49,380 +57,190 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-
-    // Add before form submission code
-// Lightbox functionality
-document.querySelectorAll('.gallery-image').forEach(img => {
-  img.addEventListener('click', () => {
-    const lightbox = document.createElement('div');
-    lightbox.className = 'lightbox';
-    lightbox.innerHTML = `
-      <img src="${img.dataset.full}" 
-           alt="${img.alt}" 
-           class="lightbox-img">
-      <div class="lightbox-close">×</div>
-    `;
-    
-    document.body.appendChild(lightbox);
-    
-    lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
-      lightbox.remove();
-    });
-  });
+    // Enhanced Lightbox functionality
+    initLightbox();
 });
 
-// Update animation targets
-const animateOnScroll = function() {
-  const animation_elements = document.querySelectorAll(
-    '.timeline-item, .project-card, .leadership-item, .gallery-card'
-  );
-  // Keep existing animation logic
-};
-
-    // Form submission
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        
-        // Simple validation
-        if (!name || !email || !subject || !message) {
-            formStatus.className = 'form-status error';
-            formStatus.textContent = 'Please fill out all fields';
-            return;
+// TypeWriter Animation for the text below name
+function initTypeWriter() {
+    class TypeWriter {
+        constructor(txtElement, words, wait = 3000) {
+            this.txtElement = txtElement;
+            this.words = words;
+            this.txt = '';
+            this.wordIndex = 0;
+            this.wait = parseInt(wait, 10);
+            this.type();
+            this.isDeleting = false;
         }
-        
-        // Email validation
-        if (!validateEmail(email)) {
-            formStatus.className = 'form-status error';
-            formStatus.textContent = 'Please enter a valid email address';
-            return;
-        }
-                formStatus.textContent = 'Sending...';
-        
-        setTimeout(() => {
-            formStatus.className = 'form-status success';
-            formStatus.textContent = 'Your message has been sent successfully!';
-            contactForm.reset();
-            
-            // Clear success message after 5 seconds
-            setTimeout(() => {
-                formStatus.textContent = '';
-                formStatus.className = 'form-status';
-            }, 5000);
-        }, 1500);
-    });
 
-    // Email validation helper
-    function validateEmail(email) {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
+        type() {
+            // Current index of word
+            const current = this.wordIndex % this.words.length;
+            // Get full text of current word
+            const fullTxt = this.words[current];
 
-    // Add animation on scroll
-    const animateOnScroll = function() {
-        const animation_elements = document.querySelectorAll('.timeline-item, .project-card, .leadership-item');
-        
-        animation_elements.forEach(element => {
-            const element_position = element.getBoundingClientRect().top;
-            const screen_position = window.innerHeight;
-            
-            if(element_position < screen_position - 100) {
-                element.classList.add('appear');
+            // Check if deleting
+            if(this.isDeleting) {
+                // Remove char
+                this.txt = fullTxt.substring(0, this.txt.length - 1);
+            } else {
+                // Add char
+                this.txt = fullTxt.substring(0, this.txt.length + 1);
             }
-        });
-    }
-    
-    // Add CSS for animation
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .timeline-item, .project-card, .leadership-item {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .timeline-item.appear, .project-card.appear, .leadership-item.appear {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .project-card:nth-child(2), .timeline-item:nth-child(2) {
-            transition-delay: 0.2s;
-        }
-        .project-card:nth-child(3), .timeline-item:nth-child(3) {
-            transition-delay: 0.4s;
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Initial animation check
-    animateOnScroll();
-    
-    // Scroll event for animations
-    window.addEventListener('scroll', animateOnScroll);
 
-    // Typed.js effect for hero section (if you want to add this library)
-    // This is commented out because it requires the Typed.js library
-    // If you want to use it, add the library via CDN in your HTML and uncomment this code
-    /*
-    if(typeof Typed !== 'undefined') {
-        let typed = new Typed('.typed-text', {
-            strings: ["Statistics Student", "Data Scientist", "Problem Solver"],
-            typeSpeed: 80,
-            backSpeed: 60,
-            backDelay: 1500,
-            loop: true
-        });
-    }
-    */
-});
+            // Insert txt into element
+            this.txtElement.innerHTML = `<span class="txt">${this.txt}</span><span class="typed-cursor">|</span>`;
 
-document.addEventListener("DOMContentLoaded", function () {
-    const words = ["Data Scientist", "Programmer", "Journalist"];
-    let wordIndex = 0;
-    let letterIndex = 0;
-    const typingSpeed = 100;
-    const erasingSpeed = 50;
-    const delayBetweenWords = 1500;
-    const typedText = document.getElementById("typed-text");
+            // Initial Type Speed
+            let typeSpeed = 100;
 
-    function type() {
-        if (letterIndex < words[wordIndex].length) {
-            typedText.textContent += words[wordIndex].charAt(letterIndex);
-            letterIndex++;
-            setTimeout(type, typingSpeed);
-        } else {
-            setTimeout(erase, delayBetweenWords);
-        }
-    }
-
-    function erase() {
-        if (letterIndex > 0) {
-            typedText.textContent = words[wordIndex].substring(0, letterIndex - 1);
-            letterIndex--;
-            setTimeout(erase, erasingSpeed);
-        } else {
-            wordIndex = (wordIndex + 1) % words.length;
-            setTimeout(type, typingSpeed);
-        }
-    }
-
-    setTimeout(type, 500);
-});
-// Navigation and Scroll Logic
-document.addEventListener('DOMContentLoaded', function() {
-    const navbar = document.getElementById('navbar');
-    const navLinks = document.querySelectorAll('.nav-links a');
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-links');
-    const sections = document.querySelectorAll('section');
-    const contactForm = document.getElementById('contactForm');
-    const formStatus = document.getElementById('formStatus');
-
-    // Toggle mobile menu
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // Close mobile menu when clicking a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        });
-    });
-
-    // Navbar scroll effect
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-        
-        // Active link on scroll
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (pageYOffset >= sectionTop - 150) {
-                current = section.getAttribute('id');
+            if(this.isDeleting) {
+                typeSpeed /= 2;
             }
-        });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').substring(1) === current) {
-                link.classList.add('active');
+            // If word is complete
+            if(!this.isDeleting && this.txt === fullTxt) {
+                // Make pause at end
+                typeSpeed = this.wait;
+                // Set delete to true
+                this.isDeleting = true;
+            } else if(this.isDeleting && this.txt === '') {
+                this.isDeleting = false;
+                // Move to next word
+                this.wordIndex++;
+                // Pause before start typing
+                typeSpeed = 500;
+            }
+
+            setTimeout(() => this.type(), typeSpeed);
+        }
+    }
+
+    const txtElement = document.querySelector('.txt-type');
+    if (txtElement) {
+        const words = JSON.parse(txtElement.getAttribute('data-words'));
+        const wait = txtElement.getAttribute('data-wait');
+        // Init TypeWriter
+        new TypeWriter(txtElement, words, wait);
+    }
+}
+
+// Enhanced Lightbox for Gallery Images
+function initLightbox() {
+    document.querySelectorAll('.gallery-image').forEach(img => {
+        img.addEventListener('click', () => {
+            const lightbox = document.createElement('div');
+            lightbox.className = 'lightbox';
+            
+            // Create the lightbox content with close button and img
+            lightbox.innerHTML = `
+                <div class="lightbox-content">
+                    <span class="lightbox-close">&times;</span>
+                    <img src="${img.src}" alt="${img.alt || 'Gallery image'}" class="lightbox-img">
+                    <p class="lightbox-caption">${img.dataset.caption || ''}</p>
+                </div>
+            `;
+            
+            document.body.appendChild(lightbox);
+            
+            // Prevent page scrolling when lightbox is open
+            document.body.style.overflow = 'hidden';
+            
+            // Add active class after a small delay for transition effect
+            setTimeout(() => lightbox.classList.add('active'), 10);
+            
+            // Close lightbox when clicking the close button or outside the image
+            lightbox.addEventListener('click', e => {
+                if (e.target === lightbox || e.target.classList.contains('lightbox-close')) {
+                    lightbox.classList.remove('active');
+                    setTimeout(() => {
+                        lightbox.remove();
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                }
+            });
+            
+            // Close on escape key
+            document.addEventListener('keydown', function escPress(e) {
+                if (e.key === 'Escape') {
+                    lightbox.classList.remove('active');
+                    setTimeout(() => {
+                        lightbox.remove();
+                        document.body.style.overflow = 'auto';
+                    }, 300);
+                    document.removeEventListener('keydown', escPress);
+                }
+            });
+        });
+    });
+}
+
+// Initialize smooth scrolling
+function initSmoothScroll() {
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Smooth scroll with requestAnimationFrame for better performance
+                const startPosition = window.pageYOffset;
+                const targetPosition = targetElement.getBoundingClientRect().top + startPosition - 100;
+                const startTime = performance.now();
+                const duration = 1000;
+                
+                function step(currentTime) {
+                    const elapsedTime = currentTime - startTime;
+                    const progress = Math.min(elapsedTime / duration, 1);
+                    const easeInOutCubic = progress < 0.5 
+                        ? 4 * progress * progress * progress 
+                        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                    
+                    window.scrollTo(0, startPosition + (targetPosition - startPosition) * easeInOutCubic);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    }
+                }
+                
+                requestAnimationFrame(step);
             }
         });
     });
+}
 
-
-    // Add before form submission code
-// Lightbox functionality
-document.querySelectorAll('.gallery-image').forEach(img => {
-  img.addEventListener('click', () => {
-    const lightbox = document.createElement('div');
-    lightbox.className = 'lightbox';
-    lightbox.innerHTML = `
-      <img src="${img.dataset.full}" 
-           alt="${img.alt}" 
-           class="lightbox-img">
-      <div class="lightbox-close">×</div>
-    `;
+// Initialize scroll animations with Intersection Observer
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
+    };
     
-    document.body.appendChild(lightbox);
-    
-    lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
-      lightbox.remove();
-    });
-  });
-});
-
-// Update animation targets
-const animateOnScroll = function() {
-  const animation_elements = document.querySelectorAll(
-    '.timeline-item, .project-card, .leadership-item, .gallery-card'
-  );
-  // Keep existing animation logic
-};
-
-    // Form submission
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        
-        // Simple validation
-        if (!name || !email || !subject || !message) {
-            formStatus.className = 'form-status error';
-            formStatus.textContent = 'Please fill out all fields';
-            return;
-        }
-        
-        // Email validation
-        if (!validateEmail(email)) {
-            formStatus.className = 'form-status error';
-            formStatus.textContent = 'Please enter a valid email address';
-            return;
-        }
-                formStatus.textContent = 'Sending...';
-        
-        setTimeout(() => {
-            formStatus.className = 'form-status success';
-            formStatus.textContent = 'Your message has been sent successfully!';
-            contactForm.reset();
-            
-            // Clear success message after 5 seconds
-            setTimeout(() => {
-                formStatus.textContent = '';
-                formStatus.className = 'form-status';
-            }, 5000);
-        }, 1500);
-    });
-
-    // Email validation helper
-    function validateEmail(email) {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
-    }
-
-    // Add animation on scroll
-    const animateOnScroll = function() {
-        const animation_elements = document.querySelectorAll('.timeline-item, .project-card, .leadership-item');
-        
-        animation_elements.forEach(element => {
-            const element_position = element.getBoundingClientRect().top;
-            const screen_position = window.innerHeight;
-            
-            if(element_position < screen_position - 100) {
-                element.classList.add('appear');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
             }
         });
-    }
+    }, observerOptions);
     
-    // Add CSS for animation
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .timeline-item, .project-card, .leadership-item {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        .timeline-item.appear, .project-card.appear, .leadership-item.appear {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .project-card:nth-child(2), .timeline-item:nth-child(2) {
-            transition-delay: 0.2s;
-        }
-        .project-card:nth-child(3), .timeline-item:nth-child(3) {
-            transition-delay: 0.4s;
-        }
-    `;
-    document.head.appendChild(style);
+    // Add animate-on-scroll class to elements
+    document.querySelectorAll('section > .container').forEach(el => {
+        el.classList.add('animate-on-scroll');
+        observer.observe(el);
+    });
     
-    // Initial animation check
-    animateOnScroll();
-    
-    // Scroll event for animations
-    window.addEventListener('scroll', animateOnScroll);
-
-    // Typed.js effect for hero section (if you want to add this library)
-    // This is commented out because it requires the Typed.js library
-    // If you want to use it, add the library via CDN in your HTML and uncomment this code
-    /*
-    if(typeof Typed !== 'undefined') {
-        let typed = new Typed('.typed-text', {
-            strings: ["Statistics Student", "Data Scientist", "Problem Solver"],
-            typeSpeed: 80,
-            backSpeed: 60,
-            backDelay: 1500,
-            loop: true
+    // Add parallax effect to hero section
+    const heroSection = document.querySelector('.hero');
+    if (heroSection) {
+        window.addEventListener('scroll', () => {
+            const scrollPos = window.pageYOffset;
+            heroSection.style.backgroundPositionY = `${scrollPos * 0.4}px`;
         });
     }
-    */
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const words = ["Data Scientist", "Programmer", "Journalist"];
-    let wordIndex = 0;
-    let letterIndex = 0;
-    const typingSpeed = 100;
-    const erasingSpeed = 50;
-    const delayBetweenWords = 1500;
-    const typedText = document.getElementById("typed-text");
-
-    function type() {
-        if (letterIndex < words[wordIndex].length) {
-            typedText.textContent += words[wordIndex].charAt(letterIndex);
-            letterIndex++;
-            setTimeout(type, typingSpeed);
-        } else {
-            setTimeout(erase, delayBetweenWords);
-        }
-    }
-
-    function erase() {
-        if (letterIndex > 0) {
-            typedText.textContent = words[wordIndex].substring(0, letterIndex - 1);
-            letterIndex--;
-            setTimeout(erase, erasingSpeed);
-        } else {
-            wordIndex = (wordIndex + 1) % words.length;
-            setTimeout(type, typingSpeed);
-        }
-    }
-
-    setTimeout(type, 500);
-});
+}
