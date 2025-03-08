@@ -349,7 +349,7 @@ section:hover {
 
 .typed-cursor {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 1.8em;
     color: var(--primary-color);
     display: inline-block;
     animation: blink 0.7s infinite;
