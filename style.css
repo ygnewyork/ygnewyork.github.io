@@ -43,7 +43,7 @@ body {
 }
 
 h1, h2, h3, h4 {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-weight: 600;
 }
 
@@ -314,7 +314,7 @@ section:hover {
 
 .hero-content p {
     font-size: 1.2rem;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .hero-buttons {
@@ -347,10 +347,11 @@ section:hover {
     margin-left: 5px;
 }
 
+/* Update typed cursor appearance */
 .typed-cursor {
     font-weight: bold;
-    font-size: 1.8em;
-    color: var(--primary-color);
+    font-size: 2.2em; /* Increased from 1.8em for better visibility */
+    color: white; /* Changed from var(--primary-color) to white */
     display: inline-block;
     animation: blink 0.7s infinite;
 }
@@ -373,7 +374,7 @@ section:hover {
 }
 
 .about-text p {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 1.1rem;
 }
 
@@ -430,7 +431,7 @@ section:hover {
 }
 
 .education-item, .honor-item, .cert-item {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     padding-left: 10px;
     border-left: 3px solid var(--secondary-color);
 }
@@ -515,6 +516,27 @@ section:hover {
 .timeline-content ul li {
     margin-bottom: 10px;
     list-style-type: disc;
+}
+
+/* Additional leadership section styling to ensure proper display */
+.leadership-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.leadership-item {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.leadership-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 /* Projects Section */
